@@ -1,9 +1,11 @@
 <script type="text/jsx">
 import Antd from 'ant-design-vue'
-import { version } from 'ant-design-vue'
+import {Button} from 'ant-design-vue'
+import {version} from 'ant-design-vue'
+import PropTypes, {withUndefined} from 'ant-design-vue/lib/_util/vue-types/index'
 
 export default {
-  components: {  },
+  components: {},
 
   setup() {
     const components = []
@@ -24,9 +26,34 @@ export default {
       // 只包含属性名称
       const attributes = []
       for (let key in component.props) {
-        attributes.push({
-          name: key
-        })
+        let type = 'string'
+        const propTypeName = component.props[key]._vueTypes_name
+
+        switch (propTypeName) {
+          case PropTypes.looseBool._vueTypes_name:
+            type = 'boolean'
+            break
+          case PropTypes.func._vueTypes_name:
+            type = 'function'
+            break
+          case PropTypes.number._vueTypes_name:
+            type = 'number'
+            break
+            // case PropTypes.oneOf._vueTypes_name:
+            //   type =
+          default:
+            type = 'string'
+            break
+        }
+
+        if (PropTypes)
+          attributes.push({
+            name: key,
+            value: {
+              kind: 'expression',
+              type: type
+            },
+          })
       }
 
       return {
@@ -55,14 +82,14 @@ export default {
 
     return () => (
         <div id="app">
-          <div class="json">{ prettyResult }</div>
+          <div class="json">{prettyResult}</div>
         </div>
     )
   },
 }
 </script>
 <style>
-  .json {
-    white-space: pre;
-  }
+.json {
+  white-space: pre;
+}
 </style>
